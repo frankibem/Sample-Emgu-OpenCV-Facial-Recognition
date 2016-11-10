@@ -14,8 +14,9 @@ namespace Trainer
 
         static void ExitOnError()
         {
-            Console.Error.WriteLine("Usage: prepare <inDir> <outDir>");
-            Console.Error.WriteLine("Usage: train <inDir> <outPath>");
+            Console.Error.WriteLine("Usage: prepare <inDir> <outDir>"); // e.g. prepare c:\users\me\pictures c:\users\me\pictures\detected
+            Console.Error.WriteLine("Usage: train <inDir> <outPath>");  // e.g. train c:\users\me\pictures\labeled c:\users\me\pictures\train.yaml
+            Console.Error.WriteLine("Usage: stitch <inDir> <outPath>"); // e.g. stitch c:\users\me\pictures\labeled c:\users\me\pictures\stitched.jpg
             Environment.Exit(-1);
         }
 
@@ -32,11 +33,13 @@ namespace Trainer
                 case "train":
                     TrainRecognizer(args[1], args[2]);
                     break;
+                case "stitch":
+                    Stitch(args[1], args[2]);
+                    break;
                 default:
                     ExitOnError();
                     break;
             }
-            //Stitch();
         }
 
         // Extracts faces in the given input directory and saves them to the given output directory
@@ -97,11 +100,11 @@ namespace Trainer
             recognizer.Save(outputPath);
         }
 
-        static void Stitch()
+        // Stitch the processed images into a grid (6 columns) for easy visualization
+        // Assumes that all input files are 100 x 100 pixels
+        static void Stitch(string inDir, string outPath)
         {
-            string path = @"C:\Users\souls\Pictures\Demo\processed";
-            string stitchOut = @"C:\Users\souls\Pictures\Demo\stitched.jpg";
-            var files = Directory.EnumerateFiles(path).ToList();
+            var files = Directory.EnumerateFiles(inDir).ToList();
 
             List<Image<Gray, byte>> rows = new List<Image<Gray, byte>>();
             Image<Gray, byte> cur = null;
@@ -137,8 +140,8 @@ namespace Trainer
             }
 
             Console.WriteLine("Stitching done");
-            Console.WriteLine($"Writing to {stitchOut}");
-            cur.Save(stitchOut);
+            Console.WriteLine($"Writing to {outPath}");
+            cur.Save(outPath);
             Console.WriteLine("Done.");
         }
     }

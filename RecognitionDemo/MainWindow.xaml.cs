@@ -18,15 +18,14 @@ namespace RecognitionDemo
     public partial class MainWindow : Window
     {
         private string cascadePath = @"haarcascade_frontalface_default.xml";
-        private string trainedData = @"C:\Users\souls\Pictures\Demo\train.yaml";
-        private string labelPath = @"C:\Users\souls\Pictures\Demo\labels.csv";
+        private string trainedData = @"<path to train results>";    // e.g. train.yaml
+        private string labelPath = @"<path to csv label file>";  // e.g. labels.csv
         private Mat original;
 
         private CascadeClassifier detector;
         private LBPHFaceRecognizer recognizer;
 
         // Associates ids to names
-        //private Dictionary<int, string> names = new Dictionary<int, string>() { { 0, "Lauren" }, { 1, "Frank" }, { 2, "Michael" }, { 3, "Claire" }, { 4, "Josh" } };
         private Dictionary<int, string> names;
 
         public MainWindow()
@@ -84,7 +83,7 @@ namespace RecognitionDemo
                     continue;
 
                 // Frame using rectangle
-                image.Draw(faceRect, new Bgr(System.Drawing.Color.Green), 2);
+                image.Draw(faceRect, new Bgr(Color.Green), 2);
 
                 // Get label
                 string name;
@@ -106,9 +105,9 @@ namespace RecognitionDemo
         }
 
         // Removes rectangles that are solely contained in another
-        private List<System.Drawing.Rectangle> Filter(System.Drawing.Rectangle[] rects)
+        private List<Rectangle> Filter(Rectangle[] rects)
         {
-            var result = new List<System.Drawing.Rectangle>();
+            var result = new List<Rectangle>();
             for(int i = 0; i < rects.Length; i++)
             {
                 bool insideOther = false;
@@ -131,7 +130,7 @@ namespace RecognitionDemo
         }
 
         // Returns true if the first rectangle is inside the second and false otherwise
-        private bool isInside(System.Drawing.Rectangle first, System.Drawing.Rectangle second)
+        private bool isInside(Rectangle first, Rectangle second)
         {
             return first.X >= second.X &&
                 first.Y >= second.Y &&
